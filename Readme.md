@@ -8,3 +8,51 @@
 6. Pass RootQuery to GraphQLSchema
 7. Export the schema
 8. Import schema into server.js and use it in expressGraphQL options Object
+9. Setup relationships between types
+10. Convert fields object to a fn that returns a field obj in order for circular dependencies to work via closure scopes
+
+
+```
+# GraphQL Operations from graphiql UI in browser
+
+{
+  user(id:"23"){
+    firstName
+    age
+    company {
+      ...companyInfo
+      users {
+        id
+        firstName
+      }
+    }
+  }
+
+  company(id: "2"){
+		...companyInfo
+    users {
+      id
+    }
+  }
+}
+
+# fragments for company id name and desc
+
+fragment companyInfo on Company {
+    id
+    name
+    description
+}
+
+# mutation
+# the body of the fn is the props you want back from the server after the resolve function finishes
+mutation {
+  addUser(
+    firstName: "Roxie",
+    age: 8
+  ) {
+    id
+    firstName
+  }
+}
+```

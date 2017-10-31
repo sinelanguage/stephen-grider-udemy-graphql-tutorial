@@ -11,7 +11,6 @@
 9. Setup relationships between types
 10. Convert fields object to a fn that returns a field obj in order for circular dependencies to work via closure scopes
 
-
 ```
 # GraphQL Operations from graphiql UI in browser
 
@@ -53,6 +52,14 @@ mutation {
   ) {
     id
     firstName
+  }
+}
+
+mutation {
+  deleteUser(
+		id: "rylycaQA-"
+  ) {
+    id
   }
 }
 ```

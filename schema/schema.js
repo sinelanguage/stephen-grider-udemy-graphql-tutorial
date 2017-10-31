@@ -64,7 +64,7 @@ const RootQuery = new GraphQLObjectType({
     company: {
       type: CompanyType,
       args: {id: {type: GraphQLString}},
-      resolve( parentValue, args ) {
+      resolve( parentValue, args ) { // i could have destructured 'id' off args object by passing { id } instead of args
         return axios.get(`http://localhost:3000/companies/${args.id}`)
                 .then(resp => resp.data)
       }
@@ -80,13 +80,33 @@ const mutation = new GraphQLObjectType({
       type: UserType, // the type bring returned from the operation
       args: {
         firstName:    { type: new GraphQLNonNull( GraphQLString ) },  // GraphQLNonNull is a helper to assert that a value is required
-        age:          { type: new GraphQLNonNull( GraphQLInt ) },
-        description:  { type: GraphQLString }
+        age:          { type: new GraphQLNonNull( GraphQLInt ) }
       },
       resolve(parentValue, { firstName, age }){ // destructured firstName and age off args object as its passed in
 
         return axios.post('http://localhost:3000/users', { firstName, age })
           .then(res => res.data)
+      }
+    },
+
+    deleteUser: {
+      type: UserType,
+      args: { id: { type: new GraphQLNonNull(GraphQLString) }}, // i forgot the non null
+      resolve(parentValue, { id }){
+        return axios.delete(`http://localhost:3000/users/${id}`)
+          .then(res => res)
+      }
+    },
+
+    editUser: {
+      type: UserType,
+      args: {
+        id:           { type: new GraphQLNonNull( GraphQLString ) },
+        firstName:    { type: GraphQLString },
+        age:          { type: GraphQLInt }
+      },
+      resolve(parentValue, args){
+        return axios.patch(`http://localhost:3000/users/${args.id}`, args)
       }
     }
   }
